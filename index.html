@@ -3,387 +3,212 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PicNest | Modern Photo Gallery</title>
+    <title>🎂 Happy Birthday Google!</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <!-- ===== LOADER ===== -->
-    <div id="loader">
-        <div class="loader-circle"></div>
-    </div>
-
-    <!-- ===== NAVBAR ===== -->
-    <nav class="navbar">
-        <div class="logo">
-            <i class="fa-solid fa-camera-retro"></i>
-            <h2>PicNest</h2>
-        </div>
-
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home" class="active">Home</a></li>
-            <li><a href="#gallery">Gallery</a></li>
-            <li><a href="#categories">Categories</a></li>
-            <li><a href="#creators">Creators</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-
-        <div class="nav-buttons">
-            <button class="theme-btn" id="themeBtn">
-                <i class="fa-solid fa-moon"></i>
-            </button>
-            <button class="login-btn" id="loginBtn">Login</button>
-            <button class="signup-btn" id="signupBtn">Sign Up</button>
-        </div>
-
-        <div class="menu-btn" id="menuBtn">
-            <i class="fa-solid fa-bars"></i>
-        </div>
-    </nav>
-
-    <!-- ===== LOGIN MODAL ===== -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <span class="modal-close" id="loginClose">&times;</span>
-            <div class="modal-header">
-                <i class="fa-solid fa-camera-retro"></i>
-                <h2>Welcome Back</h2>
-                <p>Login to your PicNest account</p>
+    <!-- ============================================================
+    STEP 1: PASSWORD SCREEN
+    ============================================================ -->
+    <div class="screen active" id="passwordScreen">
+        <div class="bg-hearts"></div>
+        <div class="stars-bg" id="starsBg"></div>
+        
+        <div class="password-box">
+            <div class="lock-icon">
+                <i class="fa-solid fa-lock"></i>
             </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="loginEmail" placeholder="Enter your email" required />
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" required />
-                </div>
-                <div class="form-options">
-                    <label><input type="checkbox" /> Remember me</label>
-                    <a href="#">Forgot password?</a>
-                </div>
-                <button type="submit" class="modal-btn">Login</button>
-                <p class="modal-footer-text">Don't have an account? <a href="#" id="switchToSignup">Sign Up</a></p>
-            </form>
+            
+            <h1 class="password-title">A Special Surprise</h1>
+            <p class="password-subtitle">For someone very special ✨</p>
+            
+            <div class="password-input-group">
+                <input type="password" id="passwordInput" placeholder="• • • •" maxlength="8" />
+                <button id="passwordBtn"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            
+            <p class="password-hint" id="passwordHint">
+                <i class="fa-solid fa-lightbulb"></i> Hint: Enter birthdate in DDMM format
+            </p>
+            <p class="error-message" id="passwordError"></p>
+            
+            <div class="password-decoration">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-heart"></i>
+            </div>
         </div>
     </div>
 
-    <!-- ===== SIGNUP MODAL ===== -->
-    <div class="modal" id="signupModal">
-        <div class="modal-content">
-            <span class="modal-close" id="signupClose">&times;</span>
-            <div class="modal-header">
-                <i class="fa-solid fa-camera-retro"></i>
-                <h2>Create Account</h2>
-                <p>Join the PicNest community</p>
+    <!-- ============================================================
+    STEP 2: BALLOON POPPING GAME
+    ============================================================ -->
+    <div class="screen" id="balloonScreen">
+        <div class="game-header">
+            <h2 class="game-title">🎈 Pop all the balloons! 🎈</h2>
+            <p class="game-subtitle">Each pop reveals a special message for you!</p>
+        </div>
+        
+        <div class="pop-counter">
+            <i class="fa-solid fa-bullseye"></i>
+            <span id="popCount">0</span>
+            <span class="divider">/</span>
+            <span id="totalBalloons">20</span>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="balloon-container" id="balloonContainer"></div>
+    </div>
+
+    <!-- ============================================================
+    STEP 3: INTERACTIVE QUESTIONS
+    ============================================================ -->
+    <div class="screen" id="questionScreen">
+        <div class="question-container">
+            <div class="question-progress">
+                <span id="questionNumber">1</span> / <span id="totalQuestions">5</span>
             </div>
-            <form id="signupForm">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="signupName" placeholder="Enter your full name" required />
+            
+            <div class="question-card" id="questionCard">
+                <div class="question-emoji" id="questionEmoji">💭</div>
+                <h2 class="question-text" id="questionText">Loading...</h2>
+                
+                <div class="question-buttons" id="questionButtons">
+                    <!-- Buttons will be injected -->
                 </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="signupEmail" placeholder="Enter your email" required />
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="signupPassword" placeholder="Create a password (min 6 characters)" required minlength="6" />
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" id="signupConfirm" placeholder="Confirm your password" required />
-                </div>
-                <button type="submit" class="modal-btn">Create Account</button>
-                <p class="modal-footer-text">Already have an account? <a href="#" id="switchToLogin">Login</a></p>
-            </form>
+            </div>
+            
+            <div class="question-feedback" id="questionFeedback"></div>
         </div>
     </div>
 
-    <!-- ===== UPLOAD MODAL ===== -->
-    <div class="modal" id="uploadModal">
-        <div class="modal-content">
-            <span class="modal-close" id="uploadClose">&times;</span>
-            <div class="modal-header">
-                <i class="fa-solid fa-cloud-upload-alt"></i>
-                <h2>Upload Image</h2>
-                <p>Share your photography with the world</p>
+    <!-- ============================================================
+    STEP 4: HAPPY BIRTHDAY MESSAGE
+    ============================================================ -->
+    <div class="screen" id="birthdayScreen">
+        <div class="confetti-container" id="confettiContainer"></div>
+        <div class="fireworks-container" id="fireworksContainer"></div>
+        
+        <div class="birthday-content">
+            <div class="birthday-cake-wrapper">
+                <div class="birthday-cake">
+                    <div class="cake">
+                        <div class="candle">
+                            <div class="flame"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <form id="uploadForm">
-                <div class="form-group">
-                    <label>Image Title</label>
-                    <input type="text" id="uploadTitle" placeholder="Enter image title" required />
+            
+            <h1 class="birthday-title">Happy Birthday</h1>
+            <h2 class="birthday-name" id="birthdayName">Google</h2>
+            
+            <p class="birthday-message">
+                Wishing you the most wonderful birthday! 
+                May all your dreams come true. 🎉
+            </p>
+
+            <div class="wish-stats">
+                <div class="wish-stat">
+                    <i class="fa-solid fa-heart"></i>
+                    <span id="heartsCount">1000+</span>
+                    <p>Hearts</p>
                 </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="uploadCategory" required>
-                        <option value="">Select a category</option>
-                        <option value="Nature">Nature</option>
-                        <option value="Travel">Travel</option>
-                        <option value="Food">Food</option>
-                        <option value="City">City</option>
-                        <option value="Animals">Animals</option>
-                        <option value="Cars">Cars</option>
-                        <option value="Forest">Forest</option>
-                        <option value="Ocean">Ocean</option>
-                        <option value="Portrait">Portrait</option>
-                        <option value="Architecture">Architecture</option>
-                    </select>
+                <div class="wish-stat">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="starsCount">500+</span>
+                    <p>Stars</p>
                 </div>
-                <div class="form-group">
-                    <label>Photographer Name</label>
-                    <input type="text" id="uploadPhotographer" placeholder="Your name" required />
+                <div class="wish-stat">
+                    <i class="fa-solid fa-gift"></i>
+                    <span id="giftsCount">200+</span>
+                    <p>Gifts</p>
                 </div>
-                <div class="form-group">
-                    <label>Image URL</label>
-                    <input type="url" id="uploadImageUrl" placeholder="https://example.com/image.jpg" required />
-                    <small style="color: var(--text); font-size: 12px; display: block; margin-top: 5px;">
-                        Use any image URL or use: https://picsum.photos/seed/your-keyword/600/400
-                    </small>
-                </div>
-                <div class="upload-preview" id="uploadPreview">
-                    <p>Preview will appear here</p>
-                </div>
-                <button type="submit" class="modal-btn">Upload Image</button>
-            </form>
+            </div>
+            
+            <div class="birthday-actions">
+                <button class="wish-btn" id="showWishBtn">
+                    <i class="fa-solid fa-envelope-open-text"></i> Read Special Letter
+                </button>
+                <button class="replay-btn" id="replayBtn">
+                    <i class="fa-solid fa-rotate-right"></i> Play Again
+                </button>
+            </div>
+        </div>
+        
+        <div class="floating-balloons">
+            <div class="balloon b1"></div>
+            <div class="balloon b2"></div>
+            <div class="balloon b3"></div>
+            <div class="balloon b4"></div>
+            <div class="balloon b5"></div>
+            <div class="balloon b6"></div>
         </div>
     </div>
 
-    <!-- ===== HERO SECTION ===== -->
-    <section class="hero" id="home">
-        <div class="hero-left">
-            <span class="badge">✨ Discover Stunning Photography</span>
-            <h1>Explore The World Through <span>Beautiful Pictures</span></h1>
-            <p>Welcome to <strong>PicNest</strong>, a modern image gallery platform where creativity meets inspiration.</p>
-
-            <div class="hero-buttons">
-                <button class="explore-btn" id="exploreBtn">Explore Gallery</button>
-                <button class="upload-btn" id="uploadBtn">Upload Images</button>
-            </div>
-
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchInput" placeholder="Search Photos, Categories, Creators..." />
-                <button id="searchBtn">Search</button>
-            </div>
-
-            <div class="hero-stats" id="statsContainer">
-                <div class="stat">
-                    <h2 id="stat1">0</h2>
-                    <p>Photos</p>
+    <!-- ============================================================
+    STEP 5: PERSONAL LETTER
+    ============================================================ -->
+    <div class="screen" id="letterScreen">
+        <div class="letter-container">
+            <div class="letter">
+                <div class="letter-header">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <h2>A Letter For You</h2>
                 </div>
-                <div class="stat">
-                    <h2 id="stat2">0</h2>
-                    <p>Creators</p>
+                <div class="letter-body">
+                    <p>Dear <span id="recipientName">Google</span>,</p>
+                    <p class="letter-intro">Happy Birthday! 🎂✨</p>
+                    <p>
+                        On this beautiful day, I just wanted to remind you how special you are. 
+                        You bring so much joy and happiness to everyone around you. 
+                        Your smile lights up the room, and your kindness makes the world a better place.
+                    </p>
+                    <p>
+                        Thank you for every laugh, every memory, and every moment we've shared. 
+                        You deserve all the happiness, love, and success in this world.
+                    </p>
+                    <p>
+                        May this year bring you countless blessings, beautiful adventures, 
+                        and dreams that come true. Keep shining, keep smiling, and keep being 
+                        the amazing person you are! 🌟
+                    </p>
+                    <p class="letter-closing">
+                        Here's to another year of wonderful memories! 🥂
+                    </p>
+                    <p class="letter-signature">
+                        With all my love,<br />
+                        <span class="signature-name">Your Secret Admirer</span>
+                    </p>
                 </div>
-                <div class="stat">
-                    <h2 id="stat3">0</h2>
-                    <p>Downloads</p>
-                </div>
-                <div class="stat">
-                    <h2 id="stat4">0</h2>
-                    <p>Categories</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="hero-right">
-            <div class="image-grid">
-                <div class="img-card large">
-                    <img src="https://picsum.photos/seed/nature-hero/600/800" alt="Nature" />
-                </div>
-                <div class="img-card">
-                    <img src="https://picsum.photos/seed/travel-hero/400/400" alt="Travel" />
-                </div>
-                <div class="img-card">
-                    <img src="https://picsum.photos/seed/mountain-hero/400/400" alt="Mountains" />
-                </div>
-                <div class="img-card">
-                    <img src="https://picsum.photos/seed/forest-hero/400/400" alt="Forest" />
-                </div>
-                <div class="img-card large">
-                    <img src="https://picsum.photos/seed/ocean-hero/600/800" alt="Ocean" />
-                </div>
-                <div class="img-card">
-                    <img src="https://picsum.photos/seed/city-hero/400/400" alt="City" />
-                </div>
+                <button class="back-btn" id="backToCelebration">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Celebration
+                </button>
             </div>
         </div>
-    </section>
-
-    <!-- ===== FEATURED COLLECTIONS ===== -->
-    <section class="featured-collections" id="gallery">
-        <div class="section-title">
-            <span>Featured</span>
-            <h2>Explore Featured Collections</h2>
-            <p>Handpicked collections from talented photographers around the world.</p>
-        </div>
-        <div class="collection-container" id="collectionContainer"></div>
-    </section>
-
-    <!-- ===== CATEGORIES ===== -->
-    <section class="categories" id="categories">
-        <div class="section-title">
-            <span>Categories</span>
-            <h2>Browse By Category</h2>
-            <p>Click on any category to filter photos</p>
-        </div>
-        <div class="category-container" id="categoryContainer"></div>
-        <div style="text-align: center; margin-top: 30px;">
-            <button class="clear-filter-btn" id="clearFilterBtn" style="display: none; padding: 12px 30px; background: #ef4444; color: white; border-radius: 30px; font-size: 16px;">
-                <i class="fa-solid fa-times"></i> Clear Filter
-            </button>
-        </div>
-    </section>
-
-    <!-- ===== TRENDING PHOTOS ===== -->
-    <section class="trending" id="photosSection">
-        <div class="section-title">
-            <span>Trending</span>
-            <h2>Trending Photos</h2>
-            <p id="categoryFilterText">Explore the most popular photographs loved by our community.</p>
-        </div>
-        <div class="gallery-grid" id="galleryGrid"></div>
-    </section>
-
-    <!-- ===== PHOTO OF THE DAY ===== -->
-    <section class="photo-day">
-        <div class="photo-content">
-            <span class="section-tag">Editor's Choice</span>
-            <h2>Photo of the Day</h2>
-            <p>Every day we feature one outstanding photograph selected by our editors.</p>
-            <div class="photo-details">
-                <div>
-                    <h4>Photographer</h4>
-                    <p id="photographerName">Sarah Khan</p>
-                </div>
-                <div>
-                    <h4>Category</h4>
-                    <p id="photoCategory">Nature</p>
-                </div>
-                <div>
-                    <h4>Likes</h4>
-                    <p id="photoLikes">12.5K ❤️</p>
-                </div>
-            </div>
-            <button class="view-btn" id="viewBtn">View Full Image</button>
-        </div>
-        <div class="photo-image">
-            <img id="photoOfDay" src="https://picsum.photos/seed/photo-day/800/600" alt="Photo Of The Day" />
-        </div>
-    </section>
-
-    <!-- ===== TOP CREATORS ===== -->
-    <section class="creators" id="creators">
-        <div class="section-title">
-            <span>Creators</span>
-            <h2>Top Photographers</h2>
-        </div>
-        <div class="creator-container" id="creatorContainer"></div>
-    </section>
-
-    <!-- ===== WHY CHOOSE US ===== -->
-    <section class="features" id="about">
-        <div class="section-title">
-            <span>Why PicNest?</span>
-            <h2>Why Choose PicNest</h2>
-        </div>
-        <div class="feature-grid" id="featureGrid"></div>
-    </section>
-
-    <!-- ===== TESTIMONIALS ===== -->
-    <section class="testimonials">
-        <div class="section-title">
-            <span>Reviews</span>
-            <h2>What Our Users Say</h2>
-        </div>
-        <div class="testimonial-container" id="testimonialContainer"></div>
-    </section>
-
-    <!-- ===== NEWSLETTER ===== -->
-    <section class="newsletter" id="contact">
-        <h2>Join Our Newsletter</h2>
-        <p>Subscribe to receive the latest photography updates.</p>
-        <div class="newsletter-box">
-            <input type="email" id="newsletterEmail" placeholder="Enter your email" />
-            <button id="subscribeBtn">Subscribe</button>
-        </div>
-    </section>
-
-    <!-- ===== FAQ ===== -->
-    <section class="faq">
-        <div class="section-title">
-            <span>FAQ</span>
-            <h2>Frequently Asked Questions</h2>
-        </div>
-        <div class="faq-container" id="faqContainer"></div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-about">
-                <h2>📸 PicNest</h2>
-                <p>PicNest is a modern photo gallery platform built to inspire creativity.</p>
-            </div>
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#gallery">Gallery</a></li>
-                    <li><a href="#categories">Categories</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-contact">
-                <h3>Contact</h3>
-                <p>Email: support@picnest.com</p>
-                <p>Phone: +92 300 1234567</p>
-                <p>Pakistan</p>
-            </div>
-            <div class="footer-social">
-                <h3>Follow Us</h3>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>© 2026 PicNest. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <!-- ===== BACK TO TOP ===== -->
-    <button id="backToTop"><i class="fa-solid fa-arrow-up"></i></button>
-
-    <!-- ===== PROGRESS BAR ===== -->
-    <div id="progressBar"></div>
-
-    <!-- ===== TOAST ===== -->
-    <div id="toast">
-        <i class="fa-solid fa-circle-check"></i>
-        <span id="toastMessage">Action completed successfully.</span>
     </div>
 
-    <!-- ===== LIGHTBOX ===== -->
-    <div class="lightbox" id="lightbox">
-        <span class="close-btn" id="closeLightbox">&times;</span>
-        <img id="lightboxImage" src="" alt="Preview" />
-        <div class="lightbox-controls">
-            <button id="prevImage"><i class="fa-solid fa-chevron-left"></i></button>
-            <button id="nextImage"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-    </div>
+    <!-- ============================================================
+    FLOATING MUSIC CONTROL
+    ============================================================ -->
+    <button class="music-control" id="musicToggle">
+        <i class="fa-solid fa-music"></i>
+    </button>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0c6ff1bab.mp3?filename=happy-birthday-114803.mp3" type="audio/mpeg" />
+    </audio>
 
     <script src="script.js"></script>
 </body>
