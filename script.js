@@ -1,711 +1,1339 @@
-/* ============================================================
-   BIRTHDAY WISHES - ROMANTIC & FUNNY EDITION
-   ============================================================ */
+// ============================================
+// ===== DATA WITH PERFECT CATEGORY-SPECIFIC IMAGES =====
+// ============================================
 
-// ============================================================
-// ===== CONFIGURATION =====
-// ============================================================
-const CONFIG = {
-    password: '0210',
-    recipientName: 'Google',
-    totalBalloons: 20,
-    colors: [
-        'balloon-color-1', 'balloon-color-2', 'balloon-color-3',
-        'balloon-color-4', 'balloon-color-5', 'balloon-color-6',
-        'balloon-color-7', 'balloon-color-8'
-    ]
-};
-
-// ============================================================
-// ===== UNIQUE BALLOON MESSAGES =====
-// ============================================================
-const BALLOON_MESSAGES = [
-    "🎉 Happy Birthday! You're amazing!",
-    "🎂 May all your dreams come true!",
-    "✨ Keep shining like the star you are!",
-    "💖 Sending you lots of love today!",
-    "🎈 Stay happy and healthy always!",
-    "🌟 You deserve the best in life!",
-    "🎁 Enjoy every moment of your special day!",
-    "💫 You're one in a million!",
-    "🎊 Wishing you a year full of joy!",
-    "🌈 May your days be colorful and bright!",
-    "🦋 You make the world a better place!",
-    "🍰 Have your cake and eat it too!",
-    "🌻 You're as special as a sunflower!",
-    "🎵 May your life be a beautiful melody!",
-    "🌸 You bloom wherever you go!",
-    "🦄 Stay magical, stay wonderful!",
-    "🌙 Sweet dreams and sweeter days ahead!",
-    "☀️ You light up every room you enter!",
-    "💎 You're a rare and precious gem!",
-    "🚀 Here's to reaching new heights this year!"
-];
-
-// ============================================================
-// ===== INTERACTIVE QUESTIONS =====
-// ============================================================
-const QUESTIONS = [
-    {
-        emoji: '💭',
-        text: 'Do you miss me?',
-        yesText: 'Yes, I do! 🥺',
-        noText: 'No 🙃',
-        yesResponse: 'Awwww! I miss you too! 🥰💕',
-        noResponse: 'Whaaaat?! That\'s not possible! 😤 Try again!',
-        forceYes: true
+const collectionsData = [
+    { 
+        title: 'Nature', 
+        count: '250+ Photos', 
+        img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop', 
+        category: 'Nature' 
     },
-    {
-        emoji: '❤️',
-        text: 'Do you love me?',
-        yesText: 'Yes, obviously! ❤️',
-        noText: 'Hmm... no? 💔',
-        yesResponse: 'I knew it! I love you more! 💖💖💖',
-        noResponse: 'Ouch! That hurts! 🥲 Are you sure? Try again!',
-        forceYes: true
+    { 
+        title: 'Travel', 
+        count: '180+ Photos', 
+        img: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&h=400&fit=crop', 
+        category: 'Travel' 
     },
-    {
-        emoji: '🥰',
-        text: 'Am I your favorite person?',
-        yesText: 'Absolutely! 🥇',
-        noText: 'Not really 🤷',
-        yesResponse: 'Yaaay! You\'re my favorite too! 🌟',
-        noResponse: 'How dare you! 😤 I thought we were besties! Try again!',
-        forceYes: true
+    { 
+        title: 'Food', 
+        count: '300+ Photos', 
+        img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=400&fit=crop', 
+        category: 'Food' 
     },
-    {
-        emoji: '🍰',
-        text: 'Will you share your birthday cake with me?',
-        yesText: 'Of course! 🍰',
-        noText: 'No, it\'s all mine! 😈',
-        yesResponse: 'Yayyy! Cake party time! 🎉🍰',
-        noResponse: 'Fine... I didn\'t want any anyway! 😢 Try again!',
-        forceYes: true
-    },
-    {
-        emoji: '🎁',
-        text: 'Am I the best gift you ever got?',
-        yesText: 'Yes, absolutely! 🎁✨',
-        noText: 'Nah, I got better ones 🤪',
-        yesResponse: 'I knew it! You\'re my best gift too! 💝',
-        noResponse: 'Okay wow! 💔 Break my heart why don\'t you! Try again!',
-        forceYes: true
+    { 
+        title: 'City', 
+        count: '200+ Photos', 
+        img: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=400&fit=crop', 
+        category: 'City' 
     }
 ];
 
-// ============================================================
-// ===== STATE =====
-// ============================================================
-let popCount = 0;
-let currentQuestionIndex = 0;
-let audioInitialized = false;
+const categoriesData = [
+    { icon: 'fa-mountain-sun', name: 'Nature' },
+    { icon: 'fa-plane', name: 'Travel' },
+    { icon: 'fa-utensils', name: 'Food' },
+    { icon: 'fa-city', name: 'City' },
+    { icon: 'fa-paw', name: 'Animals' },
+    { icon: 'fa-car', name: 'Cars' },
+    { icon: 'fa-tree', name: 'Forest' },
+    { icon: 'fa-water', name: 'Ocean' },
+    { icon: 'fa-user', name: 'Portrait' },
+    { icon: 'fa-building', name: 'Architecture' }
+];
 
-// ============================================================
-// ===== DOM REFS =====
-const passwordScreen = document.getElementById('passwordScreen');
-const balloonScreen = document.getElementById('balloonScreen');
-const questionScreen = document.getElementById('questionScreen');
-const birthdayScreen = document.getElementById('birthdayScreen');
-const letterScreen = document.getElementById('letterScreen');
-const passwordInput = document.getElementById('passwordInput');
-const passwordBtn = document.getElementById('passwordBtn');
-const passwordError = document.getElementById('passwordError');
-const balloonContainer = document.getElementById('balloonContainer');
-const popCountEl = document.getElementById('popCount');
-const totalBalloonsEl = document.getElementById('totalBalloons');
-const progressBar = document.getElementById('progressBar');
-const confettiContainer = document.getElementById('confettiContainer');
-const musicToggle = document.getElementById('musicToggle');
-const bgMusic = document.getElementById('bgMusic');
-const showWishBtn = document.getElementById('showWishBtn');
-const backToCelebration = document.getElementById('backToCelebration');
-const replayBtn = document.getElementById('replayBtn');
-const starsBg = document.getElementById('starsBg');
-const birthdayNameEl = document.getElementById('birthdayName');
-const recipientNameEl = document.getElementById('recipientName');
-const questionNumber = document.getElementById('questionNumber');
-const totalQuestions = document.getElementById('totalQuestions');
-const questionEmoji = document.getElementById('questionEmoji');
-const questionText = document.getElementById('questionText');
-const questionButtons = document.getElementById('questionButtons');
-const questionFeedback = document.getElementById('questionFeedback');
+// ============================================
+// ===== PHOTOS DATA - ALL IMAGES FIXED =====
+// ============================================
 
-// ============================================================
-// ===== CREATE STARS BACKGROUND =====
-// ============================================================
-function createStars() {
-    if (!starsBg) return;
-    for (let i = 0; i < 100; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        star.style.width = (1 + Math.random() * 3) + 'px';
-        star.style.height = star.style.width;
-        starsBg.appendChild(star);
+let photosData = [
+    // ===== NATURE CATEGORY =====
+    { 
+        id: 1,
+        title: 'Mountain Lake', 
+        photographer: 'Sarah Khan', 
+        category: 'Nature', 
+        img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 2,
+        title: 'Mountain Valley', 
+        photographer: 'Robert Chen', 
+        category: 'Nature', 
+        img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 3,
+        title: 'Green Nature', 
+        photographer: 'Emma Green', 
+        category: 'Nature', 
+        img: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop' 
+    },
+
+    // ===== TRAVEL CATEGORY =====
+    { 
+        id: 4,
+        title: 'Tropical Beach', 
+        photographer: 'Ahmed Ali', 
+        category: 'Travel', 
+        img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 5,
+        title: 'Street Market', 
+        photographer: 'Sophia Lee', 
+        category: 'Travel', 
+        img: 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 6,
+        title: 'Travel Adventure', 
+        photographer: 'Mike Johnson', 
+        category: 'Travel', 
+        img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop' 
+    },
+
+    // ===== FOOD CATEGORY =====
+    { 
+        id: 7,
+        title: 'Gourmet Burger', 
+        photographer: 'Maria Garcia', 
+        category: 'Food', 
+        img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 8,
+        title: 'Sushi Platter', 
+        photographer: 'Hiro Tanaka', 
+        category: 'Food', 
+        img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 9,
+        title: 'Healthy Salad', 
+        photographer: 'Lisa Chen', 
+        category: 'Food', 
+        img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop' 
+    },
+
+    // ===== CITY CATEGORY =====
+    { 
+        id: 10,
+        title: 'Night Skyline', 
+        photographer: 'John Smith', 
+        category: 'City', 
+        img: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 11,
+        title: 'City at Dusk', 
+        photographer: 'Oliver Brown', 
+        category: 'City', 
+        img: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 12,
+        title: 'Urban Life', 
+        photographer: 'Anna Wilson', 
+        category: 'City', 
+        img: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&h=400&fit=crop' 
+    },
+
+    // ===== FOREST CATEGORY =====
+    { 
+        id: 13,
+        title: 'Misty Forest', 
+        photographer: 'Emma Watson', 
+        category: 'Forest', 
+        img: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 14,
+        title: 'Forest Trail', 
+        photographer: 'James Wilson', 
+        category: 'Forest', 
+        img: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&h=400&fit=crop' 
+    },
+    // ===== DEEP WOODS - FIXED (Pexels) =====
+    { 
+        id: 15,
+        title: 'Deep Woods', 
+        photographer: 'David Miller', 
+        category: 'Forest', 
+        img: 'https://images.pexels.com/photos/1072824/pexels-photo-1072824.jpeg?w=600&h=400&fit=crop' 
+    },
+
+    // ===== ANIMALS CATEGORY =====
+    { 
+        id: 16,
+        title: 'African Elephant', 
+        photographer: 'Lisa Wang', 
+        category: 'Animals', 
+        img: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 17,
+        title: 'Cute Panda', 
+        photographer: 'Chen Wei', 
+        category: 'Animals', 
+        img: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 18,
+        title: 'Wild Tiger', 
+        photographer: 'Raj Singh', 
+        category: 'Animals', 
+        img: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600&h=400&fit=crop' 
+    },
+
+    // ===== CARS CATEGORY =====
+    { 
+        id: 19,
+        title: 'Luxury Sports Car', 
+        photographer: 'David Kim', 
+        category: 'Cars', 
+        img: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 20,
+        title: 'Classic Vintage', 
+        photographer: 'Tom Harris', 
+        category: 'Cars', 
+        img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 21,
+        title: 'Supercar', 
+        photographer: 'Chris Evans', 
+        category: 'Cars', 
+        img: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&h=400&fit=crop' 
+    },
+
+    // ===== OCEAN CATEGORY =====
+    { 
+        id: 22,
+        title: 'Ocean Waves', 
+        photographer: 'Michael Brown', 
+        category: 'Ocean', 
+        img: 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 23,
+        title: 'Sunset Ocean', 
+        photographer: 'Sarah Connor', 
+        category: 'Ocean', 
+        img: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 24,
+        title: 'Deep Sea', 
+        photographer: 'James Cameron', 
+        category: 'Ocean', 
+        img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&h=400&fit=crop' 
+    },
+
+    // ===== ARCHITECTURE CATEGORY =====
+    { 
+        id: 25,
+        title: 'Modern Building', 
+        photographer: 'Emily Davis', 
+        category: 'Architecture', 
+        img: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 26,
+        title: 'Historic Bridge', 
+        photographer: 'Mark Spencer', 
+        category: 'Architecture', 
+        img: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=600&h=400&fit=crop' 
+    },
+// ===== GLASS TOWER - FIXED (NEW WORKING URL) =====
+    { 
+        id: 27,
+        title: 'Glass Tower', 
+        photographer: 'Linda Park', 
+        category: 'Architecture', 
+        img: 'https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?w=600&h=400&fit=crop&auto=compress' 
+    },
+
+    // ===== PORTRAIT CATEGORY =====
+    { 
+        id: 28,
+        title: 'Portrait in Light', 
+        photographer: 'Anna Martinez', 
+        category: 'Portrait', 
+        img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop' 
+    },
+    // ===== CREATIVE PORTRAIT - FIXED (Pexels) =====
+    { 
+        id: 29,
+        title: 'Creative Portrait', 
+        photographer: 'John Doe', 
+        category: 'Portrait', 
+        img: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?w=600&h=400&fit=crop' 
+    },
+    { 
+        id: 30,
+        title: 'Studio Portrait', 
+        photographer: 'Mary Johnson', 
+        category: 'Portrait', 
+        img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=400&fit=crop' 
     }
+];
+
+// ============================================
+// ===== CREATORS DATA =====
+// ============================================
+
+const creatorsData = [
+    { name: 'Sarah Khan', role: 'Nature Photographer', img: 'https://randomuser.me/api/portraits/women/44.jpg' },
+    { name: 'Ahmed Ali', role: 'Travel Photographer', img: 'https://randomuser.me/api/portraits/men/32.jpg' },
+    { name: 'Emma Watson', role: 'Wildlife Photographer', img: 'https://randomuser.me/api/portraits/women/68.jpg' },
+    { name: 'John Smith', role: 'Street Photographer', img: 'https://randomuser.me/api/portraits/men/75.jpg' }
+];
+
+const featuresData = [
+    { icon: 'fa-camera', title: 'High Quality Images', desc: 'Discover thousands of premium quality photographs.' },
+    { icon: 'fa-cloud-arrow-down', title: 'Easy Downloads', desc: 'Download your favourite images instantly.' },
+    { icon: 'fa-share-nodes', title: 'Quick Sharing', desc: 'Share images with friends using one click.' },
+    { icon: 'fa-heart', title: 'Save Favorites', desc: 'Create your own beautiful image collection.' }
+];
+
+const testimonialsData = [
+    { text: 'PicNest has become my favorite place to discover beautiful photography.', name: '- Ali Hassan' },
+    { text: 'Amazing design, smooth experience and beautiful collections.', name: '- Amna Khalid' },
+    { text: 'The best frontend gallery platform I\'ve ever used.', name: '- Sarah Ahmed' }
+];
+
+const faqData = [
+    { question: 'Is PicNest free to use?', answer: 'Yes! You can explore and download free images for personal use.' },
+    { question: 'Can I upload my own photos?', answer: 'Yes, after signing up you can upload and manage your own gallery.' },
+    { question: 'Can I save my favorite images?', answer: 'Absolutely! Create your own collection by saving your favorite photos.' }
+];
+
+// ============================================
+// ===== USER STATE =====
+// ============================================
+
+let users = JSON.parse(localStorage.getItem('users')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+let currentFilter = null;
+let photoIdCounter = 31;
+
+// ============================================
+// ===== AUTH FUNCTIONS =====
+// ============================================
+
+function saveUsers() {
+    localStorage.setItem('users', JSON.stringify(users));
 }
 
-// ============================================================
-// ===== FLOATING HEARTS BACKGROUND =====
-// ============================================================
-function createFloatingHearts() {
-    const container = document.createElement('div');
-    container.className = 'question-hearts-bg';
-    const hearts = ['❤️', '💖', '💕', '💗', '💓', '💝', '💘'];
-    
-    for (let i = 0; i < 15; i++) {
-        const heart = document.createElement('span');
-        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-        heart.style.left = Math.random() * 100 + '%';
-        heart.style.animationDelay = (Math.random() * 8) + 's';
-        heart.style.fontSize = (20 + Math.random() * 30) + 'px';
-        container.appendChild(heart);
-    }
-    return container;
+function saveCurrentUser() {
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
 }
 
-// ============================================================
-// ===== PASSWORD CHECK =====
-// ============================================================
-function checkPassword() {
-    const input = passwordInput.value.trim();
+function clearCurrentUser() {
+    localStorage.removeItem('currentUser');
+}
+
+function isUserRegistered(email) {
+    return users.some(user => user.email.toLowerCase() === email.toLowerCase());
+}
+
+function getUserByEmail(email) {
+    return users.find(user => user.email.toLowerCase() === email.toLowerCase());
+}
+
+function registerUser(name, email, password) {
+    if (isUserRegistered(email)) {
+        return { success: false, message: 'This email is already registered!' };
+    }
     
-    if (input === CONFIG.password) {
-        passwordError.textContent = '';
-        passwordInput.style.borderColor = '#4ADE80';
-        
-        setTimeout(() => {
-            passwordScreen.classList.remove('active');
-            balloonScreen.classList.add('active');
-            initBalloonGame();
-            tryPlayMusic();
-        }, 500);
+    const newUser = {
+        id: Date.now(),
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password: password,
+        createdAt: new Date().toISOString(),
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=3b82f6&color=fff&size=100`
+    };
+    
+    users.push(newUser);
+    saveUsers();
+    return { success: true, message: 'Account created successfully!', user: newUser };
+}
+
+function loginUser(email, password) {
+    const user = getUserByEmail(email);
+    if (!user) {
+        return { success: false, message: 'No account found with this email!' };
+    }
+    if (user.password !== password) {
+        return { success: false, message: 'Incorrect password!' };
+    }
+    return { success: true, message: 'Login successful!', user: user };
+}
+
+function logoutUser() {
+    currentUser = null;
+    clearCurrentUser();
+    updateUserUI();
+    showToast('Logged out successfully! 👋', 'info');
+}
+
+// ============================================
+// ===== RENDER FUNCTIONS =====
+// ============================================
+
+function renderCollections() {
+    const container = document.getElementById('collectionContainer');
+    if (!container) return;
+    
+    container.innerHTML = collectionsData.map(item => `
+        <div class="collection-card fade-in" data-category="${item.category}">
+            <img src="${item.img}" alt="${item.title}" loading="lazy" />
+            <div class="collection-overlay">
+                <h3>${item.title}</h3>
+                <p>${item.count}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderCategories() {
+    const container = document.getElementById('categoryContainer');
+    if (!container) return;
+    
+    container.innerHTML = categoriesData.map(item => `
+        <div class="category-card fade-in" data-category="${item.name}">
+            <i class="fa-solid ${item.icon}"></i>
+            <h3>${item.name}</h3>
+        </div>
+    `).join('');
+}
+
+function renderPhotos(filterCategory = null) {
+    const container = document.getElementById('galleryGrid');
+    const filterText = document.getElementById('categoryFilterText');
+    const clearBtn = document.getElementById('clearFilterBtn');
+    
+    if (!container) return;
+    
+    let filteredPhotos = photosData;
+    
+    if (filterCategory) {
+        filteredPhotos = photosData.filter(p => p.category === filterCategory);
+        if (filterText) {
+            filterText.textContent = `Showing ${filteredPhotos.length} photos in "${filterCategory}" category`;
+        }
+        if (clearBtn) {
+            clearBtn.classList.add('show');
+        }
+        currentFilter = filterCategory;
     } else {
-        passwordError.textContent = '❌ Wrong code! Hint: DDMM format';
-        passwordInput.style.borderColor = '#ff4d6d';
-        passwordInput.value = '';
-        
-        passwordInput.parentElement.style.animation = 'shake 0.5s ease';
-        setTimeout(() => {
-            passwordInput.parentElement.style.animation = '';
-        }, 500);
+        if (filterText) {
+            filterText.textContent = 'Explore the most popular photographs loved by our community.';
+        }
+        if (clearBtn) {
+            clearBtn.classList.remove('show');
+        }
+        currentFilter = null;
     }
-}
 
-// ============================================================
-// ===== BALLOON GAME =====
-// ============================================================
-function initBalloonGame() {
-    balloonContainer.innerHTML = '';
-    popCount = 0;
-    popCountEl.textContent = '0';
-    totalBalloonsEl.textContent = CONFIG.totalBalloons;
-    progressBar.style.width = '0%';
-    
-    const shuffledMessages = [...BALLOON_MESSAGES].sort(() => Math.random() - 0.5);
-    const positions = getRandomPositions(CONFIG.totalBalloons);
-    
-    positions.forEach((pos, index) => {
-        createBalloon(pos.x, pos.y, index, shuffledMessages[index]);
-    });
-}
-
-function getRandomPositions(count) {
-    const positions = [];
-    const cols = 5;
-    
-    for (let i = 0; i < count; i++) {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        
-        const x = (col * 18 + 5) + (Math.random() * 8 - 4);
-        const y = (row * 18 + 22) + (Math.random() * 6 - 3);
-        
-        positions.push({ x, y });
+    const stat1 = document.getElementById('stat1');
+    if (stat1) {
+        stat1.textContent = photosData.length + '+';
     }
-    
-    return positions;
+
+    if (filteredPhotos.length === 0) {
+        container.innerHTML = `
+            <div class="no-results">
+                <i class="fa-solid fa-image"></i>
+                <h3>No photos found</h3>
+                <p>Try selecting a different category</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filteredPhotos.map((item, index) => `
+        <div class="photo-card fade-in" data-index="${index}" data-category="${item.category}">
+            <img src="${item.img}" alt="${item.title}" loading="lazy" />
+            <div class="photo-info">
+                <div>
+                    <h3>${item.title}</h3>
+                    <p>by ${item.photographer} • <span style="color: var(--primary); font-weight: 600;">${item.category}</span></p>
+                </div>
+                <div class="photo-actions">
+                    <i class="fa-regular fa-heart like-btn" data-id="${item.id}"></i>
+                    <i class="fa-solid fa-download download-btn" data-id="${item.id}"></i>
+                    <i class="fa-solid fa-share-nodes share-btn" data-id="${item.id}"></i>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
 
-function createBalloon(x, y, index, message) {
-    const balloon = document.createElement('div');
-    balloon.className = 'balloon ' + CONFIG.colors[index % CONFIG.colors.length];
-    balloon.style.left = x + '%';
-    balloon.style.top = y + '%';
-    balloon.style.animationDelay = (Math.random() * 2) + 's';
-    balloon.dataset.message = message;
+function renderCreators() {
+    const container = document.getElementById('creatorContainer');
+    if (!container) return;
     
-    balloon.addEventListener('click', function() {
-        popBalloon(this);
-    });
-    
-    balloonContainer.appendChild(balloon);
+    container.innerHTML = creatorsData.map(item => `
+        <div class="creator-card fade-in">
+            <img src="${item.img}" alt="${item.name}" loading="lazy" />
+            <h3>${item.name}</h3>
+            <p>${item.role}</p>
+            <button class="follow-btn">Follow</button>
+        </div>
+    `).join('');
 }
 
-function popBalloon(balloon) {
-    if (balloon.classList.contains('popped')) return;
+function renderFeatures() {
+    const container = document.getElementById('featureGrid');
+    if (!container) return;
     
-    balloon.classList.add('popped');
-    popCount++;
-    popCountEl.textContent = popCount;
+    container.innerHTML = featuresData.map(item => `
+        <div class="feature-box fade-in">
+            <i class="fa-solid ${item.icon}"></i>
+            <h3>${item.title}</h3>
+            <p>${item.desc}</p>
+        </div>
+    `).join('');
+}
+
+function renderTestimonials() {
+    const container = document.getElementById('testimonialContainer');
+    if (!container) return;
     
-    const progress = (popCount / CONFIG.totalBalloons) * 100;
-    progressBar.style.width = progress + '%';
+    container.innerHTML = testimonialsData.map(item => `
+        <div class="testimonial-card fade-in">
+            <p>"${item.text}"</p>
+            <h4>${item.name}</h4>
+        </div>
+    `).join('');
+}
+
+function renderFAQ() {
+    const container = document.getElementById('faqContainer');
+    if (!container) return;
     
-    const message = balloon.dataset.message;
-    showFloatingMessage(message, balloon);
-    createPopEffect(balloon);
-    
-    if (popCount >= CONFIG.totalBalloons) {
+    container.innerHTML = faqData.map((item, index) => `
+        <div class="faq-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+            <h3>${item.question}</h3>
+            <p>${item.answer}</p>
+        </div>
+    `).join('');
+}
+
+// ============================================
+// ===== LOADER =====
+// ============================================
+
+window.addEventListener('load', function() {
+    const loader = document.getElementById('loader');
+    if (loader) {
         setTimeout(() => {
-            balloonScreen.classList.remove('active');
-            questionScreen.classList.add('active');
-            
-            // Add floating hearts background
-            if (!document.querySelector('.question-hearts-bg')) {
-                document.body.appendChild(createFloatingHearts());
-            }
-            
-            startQuestions();
+            loader.classList.add('hidden');
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
         }, 800);
     }
-}
+    updateUserUI();
+});
 
-function createPopEffect(balloon) {
-    const rect = balloon.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+// ============================================
+// ===== TOAST =====
+// ============================================
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
     
-    for (let i = 0; i < 15; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: fixed;
-            left: ${centerX}px;
-            top: ${centerY}px;
-            width: ${6 + Math.random() * 6}px;
-            height: ${6 + Math.random() * 6}px;
-            border-radius: 50%;
-            background: ${getRandomColor()};
-            pointer-events: none;
-            z-index: 999;
-        `;
-        
-        const angle = (i / 15) * Math.PI * 2;
-        const distance = 80 + Math.random() * 80;
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance;
-        
-        particle.animate([
-            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-            { transform: `translate(${dx}px, ${dy}px) scale(0)`, opacity: 0 }
-        ], {
-            duration: 800 + Math.random() * 400,
-            easing: 'cubic-bezier(0, 0.5, 0.5, 1)'
-        });
-        
-        document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 1200);
+    const toastMessage = document.getElementById('toastMessage');
+    const icon = toast.querySelector('i');
+
+    if (toastMessage) {
+        toastMessage.textContent = message;
     }
+    
+    toast.className = type;
+    if (icon) {
+        icon.className = type === 'success' ? 'fa-solid fa-circle-check' :
+            type === 'error' ? 'fa-solid fa-circle-xmark' :
+            'fa-solid fa-circle-info';
+    }
+
+    toast.classList.add('show');
+    clearTimeout(window.toastTimeout);
+    window.toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
 }
 
-function getRandomColor() {
-    const colors = ['#FF6B9D', '#FFD93D', '#9D4EDD', '#FF5E9C', '#00D4FF', '#4ADE80', '#FF9A3C'];
-    return colors[Math.floor(Math.random() * colors.length)];
-}
+// ============================================
+// ===== BACK TO TOP =====
+// ============================================
 
-function showFloatingMessage(message, element) {
-    const rect = element.getBoundingClientRect();
-    const msg = document.createElement('div');
-    msg.textContent = message;
-    msg.style.cssText = `
-        position: fixed;
-        left: ${rect.left + rect.width / 2}px;
-        top: ${rect.top}px;
-        transform: translate(-50%, -50%);
-        background: rgba(26, 10, 46, 0.95);
-        backdrop-filter: blur(20px);
-        color: white;
-        padding: 14px 28px;
-        border-radius: 50px;
-        font-size: 14px;
-        font-weight: 600;
-        white-space: nowrap;
-        z-index: 9999;
-        pointer-events: none;
-        border: 2px solid rgba(255, 107, 157, 0.6);
-        box-shadow: 0 10px 40px rgba(255, 107, 157, 0.5);
-        max-width: 90vw;
-    `;
-    
-    document.body.appendChild(msg);
-    
-    msg.animate([
-        { transform: 'translate(-50%, -50%) scale(0.5)', opacity: 0 },
-        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.3 },
-        { transform: 'translate(-50%, -150%) scale(1)', opacity: 0 }
-    ], {
-        duration: 2200,
-        easing: 'ease-out'
+const backToTop = document.getElementById('backToTop');
+
+window.addEventListener('scroll', () => {
+    if (backToTop) {
+        backToTop.classList.toggle('show', window.scrollY > 300);
+    }
+
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progressBar = document.getElementById('progressBar');
+    if (progressBar) {
+        progressBar.style.width = (scrollTop / scrollHeight) * 100 + '%';
+    }
+
+    document.querySelectorAll('.fade-in:not(.visible)').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+            el.classList.add('visible');
+        }
     });
+});
+
+if (backToTop) {
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// ============================================
+// ===== MOBILE MENU =====
+// ============================================
+
+const menuBtn = document.getElementById('menuBtn');
+const navLinks = document.getElementById('navLinks');
+
+if (menuBtn && navLinks) {
+    menuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        const icon = menuBtn.querySelector('i');
+        if (icon) {
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
+    });
+}
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (navLinks) {
+            navLinks.classList.remove('active');
+        }
+        const icon = menuBtn?.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+});
+
+// ============================================
+// ===== THEME TOGGLE =====
+// ============================================
+
+const themeBtn = document.getElementById('themeBtn');
+
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const icon = themeBtn.querySelector('i');
+        if (icon) {
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+        showToast(document.body.classList.contains('light-mode') ? 'Light mode activated ☀️' : 'Dark mode activated 🌙', 'info');
+    });
+}
+
+// ============================================
+// ===== SEARCH =====
+// ============================================
+
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+
+function performSearch() {
+    const query = searchInput?.value?.toLowerCase()?.trim() || '';
+    const cards = document.querySelectorAll('.photo-card');
     
-    setTimeout(() => msg.remove(), 2200);
-}
-
-// ============================================================
-// ===== INTERACTIVE QUESTIONS =====
-// ============================================================
-function startQuestions() {
-    currentQuestionIndex = 0;
-    totalQuestions.textContent = QUESTIONS.length;
-    showQuestion();
-}
-
-function showQuestion() {
-    if (currentQuestionIndex >= QUESTIONS.length) {
-        // All questions done - go to birthday screen
-        setTimeout(() => {
-            questionScreen.classList.remove('active');
-            birthdayScreen.classList.add('active');
-            startConfetti();
-            startFireworks();
-        }, 1000);
+    if (!query) {
+        if (currentFilter) {
+            renderPhotos(currentFilter);
+        } else {
+            renderPhotos();
+        }
         return;
     }
     
-    const q = QUESTIONS[currentQuestionIndex];
-    questionNumber.textContent = currentQuestionIndex + 1;
-    questionEmoji.textContent = q.emoji;
-    questionText.textContent = q.text;
-    questionFeedback.textContent = '';
-    
-    // Build buttons
-    questionButtons.innerHTML = `
-        <button class="question-btn yes-btn" id="yesBtn">
-            ${q.yesText}
-        </button>
-        <button class="question-btn no-btn" id="noBtn">
-            ${q.noText}
-        </button>
-    `;
-    
-    // Add animation
-    const card = document.getElementById('questionCard');
-    card.style.animation = 'none';
-    setTimeout(() => {
-        card.style.animation = 'cardPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-    }, 10);
-    
-    // Setup button handlers
-    const yesBtn = document.getElementById('yesBtn');
-    const noBtn = document.getElementById('noBtn');
-    
-    yesBtn.addEventListener('click', () => handleYesAnswer(q));
-    
-    if (q.forceYes) {
-        // Funny "No" button that runs away on hover
-        noBtn.addEventListener('mouseenter', () => {
-            const x = Math.random() * (window.innerWidth - 150);
-            const y = Math.random() * (window.innerHeight - 100);
-            noBtn.style.position = 'fixed';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-            noBtn.style.zIndex = '9999';
-        });
-        
-        noBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Even if clicked, show the funny response then make it run again
-            showFeedback(q.noResponse, 'error');
-            setTimeout(() => {
-                const x = Math.random() * (window.innerWidth - 150);
-                const y = Math.random() * (window.innerHeight - 100);
-                noBtn.style.position = 'fixed';
-                noBtn.style.left = x + 'px';
-                noBtn.style.top = y + 'px';
-            }, 100);
-        });
-    } else {
-        noBtn.addEventListener('click', () => handleNoAnswer(q));
-    }
-}
-
-function handleYesAnswer(q) {
-    // Show positive response
-    showFeedback(q.yesResponse, 'success');
-    
-    // Create heart burst
-    createHeartBurst();
-    
-    // Play a happy sound (optional - visual feedback)
-    showSpecialPopup(q.yesResponse, 'success');
-    
-    // Move to next question after delay
-    setTimeout(() => {
-        currentQuestionIndex++;
-        showQuestion();
-    }, 1800);
-}
-
-function handleNoAnswer(q) {
-    showFeedback(q.noResponse, 'error');
-    
-    // Shake the card
-    const card = document.getElementById('questionCard');
-    card.style.animation = 'shake 0.5s ease';
-    setTimeout(() => {
-        card.style.animation = 'cardPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-    }, 500);
-}
-
-function showFeedback(message, type) {
-    questionFeedback.textContent = message;
-    questionFeedback.style.color = type === 'success' ? '#4ADE80' : '#FF6B9D';
-    
-    questionFeedback.style.animation = 'none';
-    setTimeout(() => {
-        questionFeedback.style.animation = 'feedbackPop 0.5s ease';
-    }, 10);
-}
-
-function createHeartBurst() {
-    const hearts = ['❤️', '💖', '💕', '💗', '💓', '💝', '💘', '💞'];
-    
-    for (let i = 0; i < 20; i++) {
-        const heart = document.createElement('div');
-        heart.className = 'heart-burst';
-        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-        heart.style.left = (window.innerWidth / 2) + (Math.random() * 300 - 150) + 'px';
-        heart.style.top = (window.innerHeight / 2) + 'px';
-        heart.style.animationDelay = (Math.random() * 0.5) + 's';
-        heart.style.fontSize = (20 + Math.random() * 30) + 'px';
-        
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 2500);
-    }
-}
-
-function showSpecialPopup(message, type) {
-    const popup = document.createElement('div');
-    popup.className = 'special-popup';
-    
-    let emoji = '💖';
-    let title = 'Yayyy!';
-    
-    if (message.toLowerCase().includes('love')) {
-        emoji = '💕';
-        title = 'I Love You Too!';
-    } else if (message.toLowerCase().includes('miss')) {
-        emoji = '🥰';
-        title = 'I Miss You More!';
-    } else if (message.toLowerCase().includes('favorite')) {
-        emoji = '⭐';
-        title = 'Best Friends Forever!';
-    } else if (message.toLowerCase().includes('cake')) {
-        emoji = '🍰';
-        title = 'Cake Party!';
-    } else if (message.toLowerCase().includes('gift')) {
-        emoji = '🎁';
-        title = 'You\'re My Best Gift!';
-    }
-    
-    popup.innerHTML = `
-        <div class="popup-emoji">${emoji}</div>
-        <h3>${title}</h3>
-        <p>${message}</p>
-    `;
-    
-    document.body.appendChild(popup);
-    
-    setTimeout(() => {
-        popup.classList.add('hide');
-        setTimeout(() => popup.remove(), 400);
-    }, 1500);
-}
-
-// ============================================================
-// ===== CONFETTI =====
-// ============================================================
-function startConfetti() {
-    confettiContainer.innerHTML = '';
-    const colors = ['#FF6B9D', '#FFD93D', '#9D4EDD', '#FF5E9C', '#00D4FF', '#4ADE80', '#FF9A3C'];
-    
-    for (let i = 0; i < 100; i++) {
-        setTimeout(() => {
-            createConfetti(colors);
-        }, i * 30);
-    }
-    
-    setInterval(() => {
-        if (birthdayScreen.classList.contains('active')) {
-            createConfetti(colors);
+    let found = false;
+    cards.forEach(card => {
+        const title = card.querySelector('h3')?.textContent?.toLowerCase() || '';
+        const photographer = card.querySelector('p')?.textContent?.toLowerCase() || '';
+        if (title.includes(query) || photographer.includes(query)) {
+            card.style.display = 'block';
+            found = true;
+        } else {
+            card.style.display = 'none';
         }
-    }, 400);
-}
-
-function createConfetti(colors) {
-    const confetti = document.createElement('div');
-    confetti.className = 'confetti';
+    });
     
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const shapes = ['50%', '0', '50% 0 50% 0'];
-    
-    confetti.style.cssText = `
-        position: absolute;
-        left: ${Math.random() * 100}%;
-        top: -20px;
-        width: ${8 + Math.random() * 8}px;
-        height: ${8 + Math.random() * 8}px;
-        background: ${color};
-        border-radius: ${shapes[Math.floor(Math.random() * shapes.length)]};
-        transform: rotate(${Math.random() * 360}deg);
-        animation: confettiFall ${3 + Math.random() * 3}s linear forwards;
-    `;
-    
-    confettiContainer.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 6000);
-}
-
-// ============================================================
-// ===== FIREWORKS =====
-// ============================================================
-function startFireworks() {
-    const fireworksContainer = document.getElementById('fireworksContainer');
-    
-    setInterval(() => {
-        if (!birthdayScreen.classList.contains('active')) return;
-        
-        const x = Math.random() * 80 + 10;
-        const y = Math.random() * 40 + 20;
-        createFirework(x, y, fireworksContainer);
-    }, 800);
-}
-
-function createFirework(x, y, container) {
-    const colors = ['#FF6B9D', '#FFD93D', '#9D4EDD', '#FF5E9C', '#00D4FF', '#4ADE80'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    
-    for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            left: ${x}%;
-            top: ${y}%;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: ${color};
-            pointer-events: none;
-            box-shadow: 0 0 10px ${color};
-        `;
-        
-        const angle = (i / 20) * Math.PI * 2;
-        const distance = 60 + Math.random() * 60;
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance;
-        
-        particle.animate([
-            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-            { transform: `translate(${dx}px, ${dy}px) scale(0)`, opacity: 0 }
-        ], {
-            duration: 1000 + Math.random() * 500,
-            easing: 'cubic-bezier(0, 0.5, 0.5, 1)'
-        });
-        
-        container.appendChild(particle);
-        setTimeout(() => particle.remove(), 1500);
-    }
-}
-
-// ============================================================
-// ===== MUSIC =====
-// ============================================================
-function tryPlayMusic() {
-    if (!audioInitialized) {
-        bgMusic.volume = 0.3;
-        bgMusic.play().then(() => {
-            audioInitialized = true;
-            musicToggle.classList.remove('muted');
-        }).catch(err => {
-            console.log('Autoplay blocked:', err);
-            musicToggle.classList.add('muted');
-            musicToggle.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
-        });
-    }
-}
-
-musicToggle.addEventListener('click', function() {
-    if (bgMusic.paused) {
-        bgMusic.play().catch(() => {});
-        this.classList.remove('muted');
-        this.innerHTML = '<i class="fa-solid fa-music"></i>';
+    if (!found) {
+        showToast('No photos found matching "' + query + '"', 'info');
     } else {
-        bgMusic.pause();
-        this.classList.add('muted');
-        this.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        const filterText = document.getElementById('categoryFilterText');
+        if (filterText) {
+            filterText.textContent = `Search results for "${query}"`;
+        }
+    }
+}
+
+if (searchBtn) {
+    searchBtn.addEventListener('click', performSearch);
+}
+
+if (searchInput) {
+    searchInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') performSearch();
+    });
+}
+
+// ============================================
+// ===== STATS COUNTER =====
+// ============================================
+
+function animateStats() {
+    const stats = [
+        { id: 'stat1', target: photosData.length, suffix: '+' },
+        { id: 'stat2', target: 5000, suffix: '+' },
+        { id: 'stat3', target: 1000000, suffix: '+' },
+        { id: 'stat4', target: categoriesData.length, suffix: '+' }
+    ];
+
+    stats.forEach(stat => {
+        const el = document.getElementById(stat.id);
+        if (!el) return;
+        
+        let current = 0;
+        const increment = Math.ceil(stat.target / 80);
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= stat.target) {
+                current = stat.target;
+                clearInterval(timer);
+            }
+            el.textContent = current.toLocaleString() + stat.suffix;
+        }, 20);
+    });
+}
+
+setTimeout(animateStats, 500);
+
+// ============================================
+// ===== LIGHTBOX =====
+// ============================================
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightboxImage');
+const closeLightboxBtn = document.getElementById('closeLightbox');
+const prevBtn = document.getElementById('prevImage');
+const nextBtn = document.getElementById('nextImage');
+
+let currentImageIndex = 0;
+let lightboxImages = [];
+
+function getAllGalleryImages() {
+    const images = [];
+    document.querySelectorAll('.photo-card img, .collection-card img, .img-card img, .photo-image img').forEach(img => {
+        if (img.src && img.src !== '') {
+            images.push(img.src);
+        }
+    });
+    return images;
+}
+
+lightboxImages = getAllGalleryImages();
+
+document.querySelectorAll('.photo-card img, .collection-card img, .img-card img, .photo-image img').forEach((img) => {
+    img.addEventListener('click', function(e) {
+        e.stopPropagation();
+        lightboxImages = getAllGalleryImages();
+        const index = lightboxImages.indexOf(this.src);
+        if (index > -1) {
+            openLightbox(this.src, index);
+        } else {
+            openLightbox(this.src, 0);
+        }
+    });
+});
+
+function openLightbox(src, index) {
+    if (!lightbox || !lightboxImage) return;
+    lightbox.classList.add('open');
+    lightboxImage.src = src;
+    currentImageIndex = index;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = 'auto';
+}
+
+if (closeLightboxBtn) {
+    closeLightboxBtn.addEventListener('click', closeLightbox);
+}
+
+if (lightbox) {
+    lightbox.addEventListener('click', e => {
+        if (e.target === lightbox) closeLightbox();
+    });
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+    if (lightbox?.classList.contains('open')) {
+        if (e.key === 'ArrowLeft' && prevBtn) prevBtn.click();
+        if (e.key === 'ArrowRight' && nextBtn) nextBtn.click();
     }
 });
 
-// ============================================================
-// ===== LETTER SCREEN =====
-// ============================================================
-showWishBtn.addEventListener('click', function() {
-    birthdayScreen.classList.remove('active');
-    letterScreen.classList.add('active');
+if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lightboxImages = getAllGalleryImages();
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            if (lightboxImage) {
+                lightboxImage.src = lightboxImages[currentImageIndex];
+            }
+        } else {
+            showToast('This is the first image', 'info');
+        }
+    });
+}
+
+if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lightboxImages = getAllGalleryImages();
+        if (currentImageIndex < lightboxImages.length - 1) {
+            currentImageIndex++;
+            if (lightboxImage) {
+                lightboxImage.src = lightboxImages[currentImageIndex];
+            }
+        } else {
+            showToast('This is the last image', 'info');
+        }
+    });
+}
+
+// ============================================
+// ===== VIEW FULL IMAGE =====
+// ============================================
+
+const viewBtn = document.getElementById('viewBtn');
+if (viewBtn) {
+    viewBtn.addEventListener('click', () => {
+        const img = document.getElementById('photoOfDay');
+        if (img) {
+            lightboxImages = getAllGalleryImages();
+            const index = lightboxImages.indexOf(img.src);
+            openLightbox(img.src, index > -1 ? index : 0);
+        }
+    });
+}
+
+// ============================================
+// ===== LIKE, DOWNLOAD, SHARE BUTTONS =====
+// ============================================
+
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('like-btn')) {
+        const btn = e.target;
+        btn.classList.toggle('fa-regular');
+        btn.classList.toggle('fa-solid');
+        btn.classList.toggle('liked');
+        showToast(btn.classList.contains('fa-solid') ? 'Added to Favorites ❤️' : 'Removed from Favorites', 'success');
+    }
 });
 
-backToCelebration.addEventListener('click', function() {
-    letterScreen.classList.remove('active');
-    birthdayScreen.classList.add('active');
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('download-btn')) {
+        const card = e.target.closest('.photo-card');
+        const img = card?.querySelector('img');
+        if (img) {
+            const link = document.createElement('a');
+            link.download = img.alt || 'photo.jpg';
+            link.href = img.src;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Download started! 📥', 'success');
+        }
+    }
 });
 
-// ============================================================
-// ===== REPLAY =====
-// ============================================================
-replayBtn.addEventListener('click', function() {
-    // Remove floating hearts
-    document.querySelector('.question-hearts-bg')?.remove();
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('share-btn')) {
+        const card = e.target.closest('.photo-card');
+        const img = card?.querySelector('img');
+        const url = img ? img.src : window.location.href;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'PicNest - Beautiful Photography',
+                text: 'Check out this amazing photo on PicNest!',
+                url: url
+            }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copied to clipboard! 📋', 'success');
+            }).catch(() => {
+                showToast('Unable to share', 'error');
+            });
+        }
+    }
+});
+
+// ============================================
+// ===== FOLLOW BUTTONS =====
+// ============================================
+
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('follow-btn')) {
+        const btn = e.target;
+        if (btn.textContent === 'Follow') {
+            btn.textContent = 'Following';
+            btn.classList.add('following');
+            const name = btn.closest('.creator-card')?.querySelector('h3')?.textContent || 'Creator';
+            showToast(`You are now following ${name}!`, 'success');
+        } else {
+            btn.textContent = 'Follow';
+            btn.classList.remove('following');
+            showToast('Unfollowed', 'info');
+        }
+    }
+});
+
+// ============================================
+// ===== FAQ TOGGLE =====
+// ============================================
+
+document.addEventListener('click', function(e) {
+    const faqItem = e.target.closest('.faq-item');
+    if (faqItem) {
+        const isActive = faqItem.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+        if (!isActive) {
+            faqItem.classList.add('active');
+        }
+    }
+});
+
+// ============================================
+// ===== NEWSLETTER =====
+// ============================================
+
+document.getElementById('subscribeBtn').addEventListener('click', function() {
+    const email = document.getElementById('newsletterEmail');
+    const value = email.value.trim();
+
+    if (!value) {
+        showToast('Please enter your email address!', 'error');
+        return;
+    }
+    if (!value.includes('@') || !value.includes('.')) {
+        showToast('Please enter a valid email address!', 'error');
+        return;
+    }
+
+    showToast('🎉 Thanks for subscribing!', 'success');
+    email.value = '';
+});
+
+document.getElementById('newsletterEmail').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('subscribeBtn').click();
+    }
+});
+
+// ============================================
+// ===== EXPLORE BUTTON =====
+// ============================================
+
+document.getElementById('exploreBtn').addEventListener('click', function() {
+    document.querySelector('.trending').scrollIntoView({ behavior: 'smooth' });
+    showToast('Exploring Gallery... 🖼️', 'info');
+});
+
+// ============================================
+// ===== UPLOAD MODAL =====
+// ============================================
+
+document.getElementById('uploadBtn').addEventListener('click', function() {
+    if (currentUser) {
+        openModal('uploadModal');
+    } else {
+        showToast('Please login first to upload photos!', 'error');
+        openModal('loginModal');
+    }
+});
+
+// ============================================
+// ===== UPLOAD FORM =====
+// ============================================
+
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
     
-    birthdayScreen.classList.remove('active');
-    questionScreen.classList.remove('active');
-    passwordScreen.classList.add('active');
-    passwordInput.value = '';
-    passwordInput.style.borderColor = '';
-    passwordError.textContent = '';
-    passwordInput.focus();
-});
+    const title = document.getElementById('uploadTitle').value.trim();
+    const category = document.getElementById('uploadCategory').value;
+    const photographer = document.getElementById('uploadPhotographer').value.trim();
+    const imageUrl = document.getElementById('uploadImageUrl').value.trim();
 
-// ============================================================
-// ===== EVENT LISTENERS =====
-// ============================================================
-passwordBtn.addEventListener('click', checkPassword);
-passwordInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') checkPassword();
-});
-passwordInput.addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9]/g, '');
-});
-
-// ============================================================
-// ===== INITIALIZATION =====
-// ============================================================
-createStars();
-birthdayNameEl.textContent = CONFIG.recipientName;
-recipientNameEl.textContent = CONFIG.recipientName;
-passwordInput.focus();
-
-// Shake animation style
-const shakeStyle = document.createElement('style');
-shakeStyle.textContent = `
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-10px); }
-        75% { transform: translateX(10px); }
+    if (!title || !category || !photographer || !imageUrl) {
+        showToast('Please fill in all fields!', 'error');
+        return;
     }
-`;
-document.head.appendChild(shakeStyle);
 
-console.log('%c🎂 Birthday Wishes for Google!', 'color:#FF6B9D;font-size:24px;font-weight:bold;');
-console.log('%c💝 Made with love', 'color:#FFD93D;font-size:14px;');
-console.log('%c💕 Romantic & Funny Edition', 'color:#9D4EDD;font-size:14px;');
+    const newPhoto = {
+        id: photoIdCounter++,
+        title: title,
+        photographer: photographer,
+        category: category,
+        img: imageUrl
+    };
+
+    photosData.push(newPhoto);
+    
+    if (currentFilter) {
+        renderPhotos(currentFilter);
+    } else {
+        renderPhotos();
+    }
+    
+    document.getElementById('stat1').textContent = photosData.length + '+';
+    
+    showToast(`✅ "${title}" uploaded successfully!`, 'success');
+    
+    document.getElementById('uploadTitle').value = '';
+    document.getElementById('uploadCategory').value = '';
+    document.getElementById('uploadPhotographer').value = '';
+    document.getElementById('uploadImageUrl').value = '';
+    document.getElementById('uploadPreview').innerHTML = '<p>Preview will appear here</p>';
+    document.getElementById('uploadPreview').classList.remove('has-image');
+    
+    closeModal('uploadModal');
+});
+
+// Image URL preview
+document.getElementById('uploadImageUrl').addEventListener('input', function() {
+    const url = this.value.trim();
+    const preview = document.getElementById('uploadPreview');
+    
+    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        preview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<p>❌ Invalid image URL. Please use a valid image URL.</p>'" />`;
+        preview.classList.add('has-image');
+    } else {
+        preview.innerHTML = '<p>Preview will appear here</p>';
+        preview.classList.remove('has-image');
+    }
+});
+
+// ============================================
+// ===== LOGIN / SIGNUP MODALS =====
+// ============================================
+
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = 'auto';
+}
+
+document.getElementById('loginBtn').addEventListener('click', function() {
+    openModal('loginModal');
+});
+
+document.getElementById('signupBtn').addEventListener('click', function() {
+    openModal('signupModal');
+});
+
+document.getElementById('loginClose').addEventListener('click', function() {
+    closeModal('loginModal');
+});
+
+document.getElementById('signupClose').addEventListener('click', function() {
+    closeModal('signupModal');
+});
+
+document.getElementById('uploadClose').addEventListener('click', function() {
+    closeModal('uploadModal');
+});
+
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+    });
+});
+
+document.getElementById('switchToSignup').addEventListener('click', function(e) {
+    e.preventDefault();
+    closeModal('loginModal');
+    setTimeout(() => openModal('signupModal'), 300);
+});
+
+document.getElementById('switchToLogin').addEventListener('click', function(e) {
+    e.preventDefault();
+    closeModal('signupModal');
+    setTimeout(() => openModal('loginModal'), 300);
+});
+
+// ============================================
+// ===== LOGIN FORM =====
+// ============================================
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+
+    if (!email || !password) {
+        showToast('Please fill in all fields!', 'error');
+        return;
+    }
+
+    if (!email.includes('@') || !email.includes('.')) {
+        showToast('Please enter a valid email address!', 'error');
+        return;
+    }
+
+    if (password.length < 6) {
+        showToast('Password must be at least 6 characters!', 'error');
+        return;
+    }
+
+    const result = loginUser(email, password);
+    
+    if (result.success) {
+        currentUser = result.user;
+        saveCurrentUser();
+        updateUserUI();
+        showToast(`Welcome back, ${currentUser.name}! 🎉`, 'success');
+        closeModal('loginModal');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+    } else {
+        showToast(result.message, 'error');
+    }
+});
+
+// ============================================
+// ===== SIGNUP FORM =====
+// ============================================
+
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirm').value;
+
+    if (!name || !email || !password || !confirm) {
+        showToast('Please fill in all fields!', 'error');
+        return;
+    }
+
+    if (!email.includes('@') || !email.includes('.')) {
+        showToast('Please enter a valid email address!', 'error');
+        return;
+    }
+
+    if (password.length < 6) {
+        showToast('Password must be at least 6 characters!', 'error');
+        return;
+    }
+
+    if (password !== confirm) {
+        showToast('Passwords do not match!', 'error');
+        return;
+    }
+
+    const result = registerUser(name, email, password);
+    
+    if (result.success) {
+        currentUser = result.user;
+        saveCurrentUser();
+        updateUserUI();
+        showToast(`Welcome to PicNest, ${name}! 🎉`, 'success');
+        closeModal('signupModal');
+        document.getElementById('signupName').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupConfirm').value = '';
+    } else {
+        showToast(result.message, 'error');
+    }
+});
+
+// ============================================
+// ===== UPDATE UI FOR LOGGED IN USER =====
+// ============================================
+
+function updateUserUI() {
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const navButtons = document.querySelector('.nav-buttons');
+    
+    if (!navButtons) return;
+    
+    const existingBadge = document.getElementById('userBadge');
+    if (existingBadge) {
+        existingBadge.remove();
+    }
+    
+    if (currentUser) {
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (signupBtn) signupBtn.style.display = 'none';
+        
+        const userBadge = document.createElement('div');
+        userBadge.className = 'user-badge show';
+        userBadge.id = 'userBadge';
+        userBadge.innerHTML = `
+            <img src="${currentUser.avatar}" alt="User" />
+            <span>${currentUser.name}</span>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        `;
+        navButtons.appendChild(userBadge);
+        
+        document.getElementById('logoutBtn')?.addEventListener('click', function() {
+            logoutUser();
+        });
+    } else {
+        if (loginBtn) loginBtn.style.display = '';
+        if (signupBtn) signupBtn.style.display = '';
+    }
+}
+
+// ============================================
+// ===== CATEGORY FILTERING =====
+// ============================================
+
+document.addEventListener('click', function(e) {
+    const categoryCard = e.target.closest('.category-card');
+    if (categoryCard) {
+        const categoryName = categoryCard.dataset.category;
+        
+        document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+        categoryCard.classList.add('active');
+        
+        renderPhotos(categoryName);
+        showToast(`Showing "${categoryName}" photos 🏷️`, 'info');
+        
+        document.getElementById('photosSection').scrollIntoView({ behavior: 'smooth' });
+    }
+});
+
+// ============================================
+// ===== CLEAR FILTER =====
+// ============================================
+
+document.getElementById('clearFilterBtn').addEventListener('click', function() {
+    document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+    renderPhotos();
+    showToast('Filter cleared!', 'info');
+    this.classList.remove('show');
+});
+
+// ============================================
+// ===== COLLECTION CLICK =====
+// ============================================
+
+document.addEventListener('click', function(e) {
+    const collectionCard = e.target.closest('.collection-card');
+    if (collectionCard) {
+        const category = collectionCard.dataset.category;
+        if (category) {
+            const card = document.querySelector(`.category-card[data-category="${category}"]`);
+            if (card) {
+                card.click();
+            }
+        }
+    }
+});
+
+// ============================================
+// ===== NAV LINKS ACTIVE STATE =====
+// ============================================
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function() {
+        document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// ============================================
+// ===== SCROLL REVEAL =====
+// ============================================
+
+setTimeout(() => {
+    document.querySelectorAll('.fade-in').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+            el.classList.add('visible');
+        }
+    });
+}, 200);
+
+// ============================================
+// ===== CONSOLE =====
+// ============================================
+
+console.log('%c📸 Welcome to PicNest!', 'color:#3b82f6;font-size:22px;font-weight:bold;');
+console.log('%c❤️ Made with love for photography lovers.', 'color:#8b5cf6;font-size:15px;');
+console.log('%c🚀 Explore, share, and create!', 'color:#ec4899;font-size:15px;');
+
+// ============================================
+// ===== INITIAL RENDER =====
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderCollections();
+    renderCategories();
+    renderPhotos();
+    renderCreators();
+    renderFeatures();
+    renderTestimonials();
+    renderFAQ();
+    updateUserUI();
+});
+
+// ============================================
+// ===== KEYBOARD SHORTCUTS =====
+// ============================================
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.open').forEach(modal => {
+            modal.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        });
+    }
+});
